@@ -9,10 +9,11 @@
     tcpPort: { value: "" },
     method: {value: "write"},
     voltage: { value: 0},
-		},
+    dacChannel: {value: "AOUT1"}
+  	},
 		inputs:1,
 		outputs:1,
-	  icon: "",
+	  icon: "arrow-right.svg",
 		label: function() {
 			return this.name||"dac-node";
     },
@@ -97,16 +98,17 @@
   <div class="form-row channel">
     <label for="node-input-dacChannel">Channel</label>
     <select id="node-input-dacChannel">
-      <option value="AOUT1">A-OUT1</option>
-      <option value="AOUT2">A-OUT2</option>
-      <option value="AOUT3">A-OUT3</option>
-      <option value="AOUT4">A-OUT4</option>
-      <option value="AOUT5">A-OUT5</option>
-      <option value="AOUT6">A-OUT6</option>
-      <option value="AOUT7">A-OUT7</option>
-      <option value="AOUT8">A-OUT8</option>
+      <option value="AOUT1">AOUT1</option>
+      <option value="AOUT2">AOUT2</option>
+      <option value="AOUT3">AOUT3</option>
+      <option value="AOUT4">AOUT4</option>
+      <option value="AOUT5">AOUT5</option>
+      <option value="AOUT6">AOUT6</option>
+      <option value="AOUT7">AOUT7</option>
+      <option value="AOUT8">AOUT8</option>
     </select>
   </div>
+  <div><input type="hidden" id="node-input-gain"></div>
   <div class="form-row method">
     <label for="node-input-method">Method:</label>
     <select id="node-input-method">

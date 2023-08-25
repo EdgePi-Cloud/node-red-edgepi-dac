@@ -9,6 +9,8 @@ module.exports = function (RED) {
       const tcp_transport = `tcp://${config.tcpAddress}:${config.tcpPort}`
       const transport = (config.transport === "Network") ? tcp_transport : ipc_transport;
       const voltage = parseFloat(config.voltage);
+      const channel = rpc.DACChannel[config.dacChannel];
+      let validInput = true;
 
       // Init dac
       const dac = new rpc.DacService(transport)
@@ -18,23 +20,43 @@ module.exports = function (RED) {
         node.status({fill:"green", shape:"ring", text:"dac initialized"});
       }
 
+      // Enforce gain on write method
+      if(config.method === "write"){
+        dac.setDacGain(true,true);
+        config.gain = true;
+      }
+      
+
       // Check correct configurations
       if(config.method === "write" && isNaN(voltage)){
-        node.status({fill:"red", shape:"dot", text:"please enter a valid number to write voltage"});
+        node.status({fill:"red", shape:"ring", text:"please enter a valid number to write voltage"});
+        validInput = false;
       }
       else if(config.method === "write" && (voltage > 10 || voltage < 0)){
-        node.status({fill:"red", shape:"dot", text:"please enter a voltage between 0 and 10"});
-      }
-
-    
-      // init new dac instance
-      
+        node.status({fill:"red", shape:"ring", text:"please enter a voltage between 0 and 10"});
+        validInput = false;
+      }  
   
       // Input event listener
       node.on('input', async function(msg,send,done){
+        if(!validInput){
+          node.status({fill:"red", shape:"dot", text:"node made no call because it has invalid input."});
+          return;
+        }
+
         node.status({fill:"green", shape:"dot", text:"input recieved"});
         try{
-          // method call
+          let response;
+          if(config.method === "read"){
+            const {voltageVal} = await dac.getState({
+              analogOut: channel,
+              voltage: true
+            })
+            response = voltageVal;
+          }
+          else if (config.method === "write"){
+            response = await dac.writeVoltage(channel, voltage);
+          }
           msg.payload = response;
         }
         catch(error){
@@ -42,6 +64,7 @@ module.exports = function (RED) {
           console.error(error)
         }
         
+        // Send msg
         send(msg)
         
         if (done) {
