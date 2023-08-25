@@ -130,15 +130,28 @@
 	<dl class="message-properties">
 		<dt> RPC Server</dt>
 		<dd>The connection to your EdgePi's RPC Server. </dd>
+    <dt>Channel</dt>
+		<dd>Select channel for analogue output read/write.</dd>
+    <dt>Method</dt>
+		<dd>Select method to either read or write.</dd>
+    <dt> Voltage to write<span class="property-type">number</span></dt>
+		<dd>When on write configuration: the amount of voltage between 0 and 10 to write to a selected channel.</dd>
 	</dl>
 	<h3>Inputs</h3>
 		<dl class="message-properties">
 			Any message can be used to trigger this node.
 		</dl>
 	<h3>Outputs</h3>
-		<dl class="message-properties">
-
-		</dl>
+  <p>• When configured to read voltage:</p>
+  <dl class="message-properties">
+    <dt>payload <span class="property-type">number</span></dt>
+    <dd>voltage reading from selected channel.</dd>
+  </dl>
+  <p>• When configured to write voltage:</p>
+  <dl class="message-properties">
+    <dt>payload <span class="property-type">string</span></dt>
+    <dd>A success message stating the voltage written to the selected channel.</dd>
+  </dl>
 	<h3>References</h3>
 		<ul>
 			<li><a href="https://github.com/edgepi-cloud/node-red-edgepi-dac">GitHub</a> -the node's github repository </li>
