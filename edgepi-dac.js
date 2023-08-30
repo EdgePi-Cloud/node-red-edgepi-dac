@@ -14,7 +14,7 @@ module.exports = function (RED) {
       const channel = rpc.DACChannel[config.dacChannel];
 
       // Init dac
-      const dac = new rpc.DacService(transport)
+      const dac = null;
   
       if (dac){
         console.info("DAC node initialized on:", transport);
@@ -29,7 +29,9 @@ module.exports = function (RED) {
       let validWriteInput;
       if(config.method === "write"){
         dac.setDacGain(true,true);
-        validWriteInput = checkValidWriteInput(voltage, node);
+        const upperLim = 10;
+        const lowerLim = 0;
+        validWriteInput = checkValidWriteInput(node, voltage, upperLim, lowerLim);
       }
   
       // Input event listener

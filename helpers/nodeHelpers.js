@@ -1,7 +1,5 @@
 
-function checkValidWriteInput(voltage, node) {
-    const upperLim = 10
-    const lowerLim = 0
+function checkValidWriteInput(node, voltage, upperLim, lowerLim) {
     if(typeof(voltage) === "number" && (voltage <= upperLim && voltage >= lowerLim) ){
         return true 
     }
