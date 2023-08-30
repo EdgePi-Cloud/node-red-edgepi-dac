@@ -53,9 +53,14 @@ module.exports = function (RED) {
           }
           else if (config.method === "write"){
             response = await dac.writeVoltage(channel, voltage);
+            
+          }
+          else {
+            throw new Error(`Unexpected value: ${config.method}`);
           }
           msg.payload = response;
         }
+        
         catch(error){
           msg.payload = error;
           console.error(error)
