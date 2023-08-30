@@ -20,6 +20,10 @@ module.exports = function (RED) {
         console.info("DAC node initialized on:", transport);
         node.status({fill:"green", shape:"ring", text:"dac initialized"});
       }
+      else{
+        node.status({fill:"red", shape:"ring", text:"dac failed to initialize."});
+        throw new Error('Failed to initialize dac.')
+      }
 
       // Enforce gain on write method and check valid configuration input
       let validWriteInput;
@@ -27,8 +31,6 @@ module.exports = function (RED) {
         dac.setDacGain(true,true);
         validWriteInput = checkValidWriteInput(voltage, node);
       }
-
-      
   
       // Input event listener
       node.on('input', async function(msg,send,done){
@@ -64,8 +66,7 @@ module.exports = function (RED) {
           done();
         }
       });
-  
-    }
+  }
 
     RED.nodes.registerType('edgepi-dac-node', DacNode);
     
