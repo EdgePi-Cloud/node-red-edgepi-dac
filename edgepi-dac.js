@@ -14,7 +14,7 @@ module.exports = function (RED) {
       const channel = rpc.DACChannel[config.dacChannel];
 
       // Init dac
-      const dac = null;
+      const dac = new rpc.DacService(transport);
   
       if (dac){
         console.info("DAC node initialized on:", transport);
