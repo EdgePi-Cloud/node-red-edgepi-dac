@@ -28,14 +28,18 @@ module.exports = function (RED) {
       // Enforce gain on write method and check valid configuration input
       let validWriteInput;
       if(config.method === "write"){
-        dac.setDacGain(true,true);
-        const upperLim = 10;
-        const lowerLim = 0;
-        validWriteInput = checkValidWriteInput(node, voltage, upperLim, lowerLim);
+        dac.setDacGain(true,true).then(() => {
+          const upperLim = 10;
+          const lowerLim = 0;
+          validWriteInput = checkValidWriteInput(node, voltage, upperLim, lowerLim);
+          node.on('input',(msg,send,done) => inputListener(msg, send, done));
+        })
+      }
+      else {
+        node.on('input', (msg,send,done) => inputListener(msg, send, done));
       }
   
-      // Input event listener
-      node.on('input', async function(msg,send,done){
+      async function inputListener(msg,send,done) {{
         if(config.method === "write" && !validWriteInput){
           node.status({fill:"red", shape:"dot", text:"node made no call because it has invalid input."});
           return;
@@ -72,7 +76,7 @@ module.exports = function (RED) {
         if (done) {
           done();
         }
-      });
+      }}
   }
 
     RED.nodes.registerType('edgepi-dac-node', DacNode);
