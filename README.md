@@ -33,3 +33,8 @@ Voltage reading from selected channel.
   - **payload** *string*<br>
 A success message stating the voltage written to the selected channel.
 
+
+**NOTE:** Currently, EdgePi nodes are only available on x86 systems.
+
+
+
