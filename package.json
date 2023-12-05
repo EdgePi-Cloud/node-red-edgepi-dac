@@ -27,7 +27,7 @@
     },
     "homepage": "https://github.com/EdgePi-Cloud/node-red-edgepi-dac#readme",
     "dependencies": {
-        "@edgepi-cloud/edgepi-rpc": "^1.0.11"
+        "@edgepi-cloud/edgepi-rpc": "^1.0.12"
     },
     "devDependencies": {
         "node-red": "^3.0.2"
