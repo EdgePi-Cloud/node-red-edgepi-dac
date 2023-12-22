@@ -24,8 +24,8 @@ The amount of voltage to write to a selected channel. Range is 0-5 for gain off 
 ### Inputs
   - **payload** *number*: <br>
 Voltage reading.
-  - **gain** *string*: <br>
-Configurations are 'on' or 'off'.
+  - **gain** *boolean*: <br>
+'false' for gain disabled (off), 'true' for gain enabled (on).
   - **channel** *number*: <br>
 
 Example input:
