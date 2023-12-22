@@ -15,21 +15,35 @@ npm install @edgepi-cloud/node-red-edgepi-digital-dac
 - **RPC Server**<br>
 The connection to your EdgePi's RPC Server.
 - **Channel**<br>
-Select channel for analogue output read/write.
-- **Method**<br>
-Select method to either read or write.
-- **Voltage to write** *number* <br>
-When on write configuration: the amount of voltage between 0 and 10 to write to a selected channel.
+The channel for analogue output read/write.
+- **Gain**<br>
+Enable/ disable internal DAC gain. Gain enabled allows for a larger output voltage for a given input voltage but reduces accuracy.
+- **Output voltage** *number* <br>
+The amount of voltage to write to a selected channel. Range is 0-5 for gain off and 0-10 for gain on.
 
 ### Inputs
-Any message can be used to trigger this node.
+  - **payload** *number*: <br>
+Voltage reading.
+  - **gain** *string*: <br>
+Configurations are 'on' or 'off'.
+  - **channel** *number*: <br>
+
+Example input:
+```
+msg {
+  "payload": 5,
+  "gain": false,
+  "channel": 7
+}
+```
 
 ### Outputs
-- When configured to read voltage:
-  - **payload** *number*: <br>
-Voltage reading from selected channel.
-  
-- When configured to write voltage:
   - **payload** *string*<br>
 A success message stating the voltage written to the selected channel.
 
+Example output:
+```
+msg {
+  payload: "Successfully wrote 5.0v to DACChannel.AOUT7."
+}
+```
