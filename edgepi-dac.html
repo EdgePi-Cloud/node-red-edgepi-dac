@@ -36,14 +36,14 @@
       function updateEditor() {
         tcpField.style.display =
           configTransportSelect.value === "Network" ? "flex" : "none";
-        const selectedGain = gain1.checked ? false : true;
-        voltageGain1.style.display = selectedGain === false ? "flex" : "none";
-        voltageGain2.style.display = selectedGain === true ? "flex" : "none";
+        const selectedGain = !gain1.checked;
+        voltageGain1.style.display = !selectedGain ? "flex" : "none";
+        voltageGain2.style.display = selectedGain ? "flex" : "none";
       }
 
       updateEditor();
       document.getElementById(
-        this.gain === false
+        !this.gain
           ? "node-input-voltageGain1"
           : "node-input-voltageGain2"
       ).value = this.voltage;
@@ -53,9 +53,7 @@
       gain2.addEventListener("change", updateEditor);
     },
     oneditsave: function () {
-      this.gain = document.getElementById("node-input-gain1").checked
-        ? false
-        : true;
+      this.gain = !document.getElementById("node-input-gain1").checked;
       this.voltage = document.getElementById(
         this.gain === false
           ? "node-input-voltageGain1"
@@ -159,11 +157,11 @@
       type="radio"
       name="gain"
       id="node-input-gain1"
-      value=false
+      value="false"
       checked
     />
     <label for="node-input-gain1">OFF</label>
-    <input type="radio" name="gain" id="node-input-gain2" value=true />
+    <input type="radio" name="gain" id="node-input-gain2" value="true" />
     <label for="node-input-gain2">ON</label>
   </div>
   <div class="form-row voltageGain2">

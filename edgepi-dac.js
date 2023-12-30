@@ -12,9 +12,9 @@ module.exports = function (RED) {
       node.on("input", async function (msg, send, done) {
         node.status({ fill: "green", shape: "dot", text: "input received" });
         try {
-          gain = msg.gain ?? gain;
-          voltage = msg.payload ?? voltage;
-          channel = msg.channel ?? channel;
+          gain = msg.gain || gain;
+          voltage = msg.payload || voltage;
+          channel = msg.channel || channel;
 
           if ((gain && voltage > 10) || voltage < 0 || (!gain && voltage > 5)) {
             throw new Error(

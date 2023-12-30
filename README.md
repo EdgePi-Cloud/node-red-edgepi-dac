@@ -23,7 +23,7 @@ The amount of voltage to write to a selected channel. Range is 0-5 for gain off 
 
 ### Inputs
   - **payload** *number*: <br>
-Voltage reading.
+The voltage to write.
   - **gain** *boolean*: <br>
 'false' for gain disabled (off), 'true' for gain enabled (on).
   - **channel** *number*: <br>
@@ -31,7 +31,7 @@ Voltage reading.
 Example input:
 ```
 msg {
-  "payload": 5,
+  "payload": 2.5,
   "gain": false,
   "channel": 7
 }
@@ -44,6 +44,6 @@ A success message stating the voltage written to the selected channel.
 Example output:
 ```
 msg {
-  payload: "Successfully wrote 5.0v to DACChannel.AOUT7."
+  payload: "Successfully wrote 2.5v to DACChannel.AOUT7."
 }
 ```
