@@ -21,43 +21,39 @@
       const configTransportSelect = document.getElementById(
         "node-input-transport"
       );
-      const gain1 = document.getElementById("node-input-gain1");
-      const gain2 = document.getElementById("node-input-gain2");
+      const gainOff = document.getElementById("node-input-gainOff");
+      const gainOn = document.getElementById("node-input-gainOn");
       const tcpField = document.querySelector(".form-row.tcp");
-      const voltageGain1 = document.querySelector(".form-row.voltageGain1");
-      const voltageGain2 = document.querySelector(".form-row.voltageGain2");
+      const voltageGainOff = document.querySelector(".form-row.voltageGainOff");
+      const voltageGainOn = document.querySelector(".form-row.voltageGainOn");
 
-      if (this.gain == false) {
-        gain1.checked = true;
+      if (this.gain) {
+        gainOn.checked = true;
       } else {
-        gain2.checked = true;
+        gainOff.checked = true;
       }
 
       function updateEditor() {
         tcpField.style.display =
           configTransportSelect.value === "Network" ? "flex" : "none";
-        const selectedGain = !gain1.checked;
-        voltageGain1.style.display = !selectedGain ? "flex" : "none";
-        voltageGain2.style.display = selectedGain ? "flex" : "none";
+        const selectedGain = !gainOff.checked;
+        voltageGainOff.style.display = !selectedGain ? "flex" : "none";
+        voltageGainOn.style.display = selectedGain ? "flex" : "none";
       }
 
       updateEditor();
       document.getElementById(
-        !this.gain
-          ? "node-input-voltageGain1"
-          : "node-input-voltageGain2"
+        this.gain ? "node-input-voltageGainOn" : "node-input-voltageGainOff"
       ).value = this.voltage;
 
       configTransportSelect.addEventListener("change", updateEditor);
-      gain1.addEventListener("change", updateEditor);
-      gain2.addEventListener("change", updateEditor);
+      gainOff.addEventListener("change", updateEditor);
+      gainOn.addEventListener("change", updateEditor);
     },
     oneditsave: function () {
-      this.gain = !document.getElementById("node-input-gain1").checked;
+      this.gain = document.getElementById("node-input-gainOn").checked;
       this.voltage = document.getElementById(
-        this.gain === false
-          ? "node-input-voltageGain1"
-          : "node-input-voltageGain2"
+        this.gain ? "node-input-voltageGainOn" : "node-input-voltageGainOff"
       ).value;
     },
   });
@@ -97,17 +93,18 @@
       margin: auto 5px;
     }
 
-    .form-row.voltageGain1 input,
-    .form-row.voltageGain2 input {
+    .form-row.voltageGainOff input,
+    .form-row.voltageGainOn input {
       width: 60px;
     }
 
     .form-row.gain input[type="radio"] {
       width: 40px !important;
+      margin: 0;
     }
 
-    label[for="node-input-gain1"],
-    label[for="node-input-gain2"] {
+    label[for="node-input-gainOff"],
+    label[for="node-input-gainOn"] {
       width: 50px !important;
     }
   </style>
@@ -152,34 +149,34 @@
     </select>
   </div>
   <div class="form-row gain">
-    <label for="gain">Gain:</label>
+    <label>Gain:</label>
     <input
       type="radio"
       name="gain"
-      id="node-input-gain1"
+      id="node-input-gainOff"
       value="false"
       checked
     />
-    <label for="node-input-gain1">OFF</label>
-    <input type="radio" name="gain" id="node-input-gain2" value="true" />
-    <label for="node-input-gain2">ON</label>
+    <label for="node-input-gainOff">OFF</label>
+    <input type="radio" name="gain" id="node-input-gainOn" value="true" />
+    <label for="node-input-gainOn">ON</label>
   </div>
-  <div class="form-row voltageGain2">
-    <label for="node-input-voltageGain2">Output voltage (V): </label>
+  <div class="form-row voltageGainOn">
+    <label for="node-input-voltageGainOn">Output voltage (V): </label>
     <input
       type="number"
-      id="node-input-voltageGain2"
+      id="node-input-voltageGainOn"
       placeholder="0-10"
       min="0"
       max="10"
       step="0.1"
     />
   </div>
-  <div class="form-row voltageGain1">
-    <label for="node-input-voltageGain1">Output voltage (V): </label>
+  <div class="form-row voltageGainOff">
+    <label for="node-input-voltageGainOff">Output voltage (V): </label>
     <input
       type="number"
-      id="node-input-voltageGain1"
+      id="node-input-voltageGainOff"
       placeholder="0-5"
       min="0"
       max="5"
@@ -210,7 +207,7 @@
   </dl>
   <h3>Outputs</h3>
   <dl class="message-properties">
-    <dt>payload <span class="property-type">string</span></dt>
+    <dt>payload <span class="property-type">number</span></dt>
     <dd>A success message stating the voltage set for the selected channel.</dd>
   </dl>
   <h3>References</h3>
