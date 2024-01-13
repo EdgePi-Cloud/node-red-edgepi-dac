@@ -17,7 +17,9 @@ module.exports = function (RED) {
           channel = msg.channel || channel;
           if ((gain && voltage > 10) || (!gain && voltage > 5) || voltage < 0) {
             throw new Error(
-              "Voltage being written is outside the valid range."
+              `Voltage being written is outside the valid range ${
+                gain ? "[0,10]." : "[0,5]."
+              }`
             );
           }
           if (gain) {
@@ -45,7 +47,11 @@ module.exports = function (RED) {
         node.status({ fill: "green", shape: "ring", text: "dac initialized" });
 
         if ((gain && voltage > 10) || (!gain && voltage > 5) || voltage < 0) {
-          throw new Error("Voltage being written is outside the valid range.");
+          throw new Error(
+            `Voltage being written is outside the valid range ${
+              gain ? "[0,10]" : "[0,5]"
+            }`
+          );
         }
         if (gain) {
           await dac.setDacGain(true, true);
