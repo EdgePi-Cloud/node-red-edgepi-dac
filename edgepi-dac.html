@@ -8,8 +8,8 @@
       tcpAddress: { value: "" },
       tcpPort: { value: "" },
       voltage: {},
-      dacChannel: { value: "AOUT1" },
-      gainOption: { value: "gain1" },
+      channel: { value: 1 },
+      gain: { value: false },
     },
     inputs: 1,
     outputs: 1,
@@ -18,50 +18,42 @@
       return this.name || "dac";
     },
     oneditprepare: function () {
-      // Query html elements
       const configTransportSelect = document.getElementById(
         "node-input-transport"
       );
-      const gainOption1 = document.getElementById("node-input-gain1");
-      const gainOption2 = document.getElementById("node-input-gain2");
+      const gainOff = document.getElementById("node-input-gainOff");
+      const gainOn = document.getElementById("node-input-gainOn");
       const tcpField = document.querySelector(".form-row.tcp");
-      const voltageGain1 = document.querySelector(".form-row.voltageGain1");
-      const voltageGain2 = document.querySelector(".form-row.voltageGain2");
+      const voltageGainOff = document.querySelector(".form-row.voltageGainOff");
+      const voltageGainOn = document.querySelector(".form-row.voltageGainOn");
 
-      if (this.gainOption == "gain1") {
-        gainOption1.checked = true;
+      if (this.gain) {
+        gainOn.checked = true;
       } else {
-        gainOption2.checked = true;
+        gainOff.checked = true;
       }
 
       function updateEditor() {
         tcpField.style.display =
           configTransportSelect.value === "Network" ? "flex" : "none";
-        const selectedGain = gainOption1.checked ? "gain1" : "gain2";
-        voltageGain1.style.display = selectedGain === "gain1" ? "flex" : "none";
-        voltageGain2.style.display = selectedGain === "gain2" ? "flex" : "none";
+        const selectedGain = !gainOff.checked;
+        voltageGainOff.style.display = !selectedGain ? "flex" : "none";
+        voltageGainOn.style.display = selectedGain ? "flex" : "none";
       }
 
-      // Update and add event listener to update on user input
       updateEditor();
       document.getElementById(
-        this.gainOption === "gain1"
-          ? "node-input-voltageGain1"
-          : "node-input-voltageGain2"
+        this.gain ? "node-input-voltageGainOn" : "node-input-voltageGainOff"
       ).value = this.voltage;
 
       configTransportSelect.addEventListener("change", updateEditor);
-      gainOption1.addEventListener("change", updateEditor);
-      gainOption2.addEventListener("change", updateEditor);
+      gainOff.addEventListener("change", updateEditor);
+      gainOn.addEventListener("change", updateEditor);
     },
     oneditsave: function () {
-      this.gainOption = document.getElementById("node-input-gain1").checked
-        ? "gain1"
-        : "gain2";
+      this.gain = document.getElementById("node-input-gainOn").checked;
       this.voltage = document.getElementById(
-        this.gainOption === "gain1"
-          ? "node-input-voltageGain1"
-          : "node-input-voltageGain2"
+        this.gain ? "node-input-voltageGainOn" : "node-input-voltageGainOff"
       ).value;
     },
   });
@@ -101,17 +93,18 @@
       margin: auto 5px;
     }
 
-    .form-row.voltageGain1 input,
-    .form-row.voltageGain2 input {
+    .form-row.voltageGainOff input,
+    .form-row.voltageGainOn input {
       width: 60px;
     }
 
     .form-row.gain input[type="radio"] {
       width: 40px !important;
+      margin: 0;
     }
 
-    label[for="node-input-gain1"],
-    label[for="node-input-gain2"] {
+    label[for="node-input-gainOff"],
+    label[for="node-input-gainOn"] {
       width: 50px !important;
     }
   </style>
@@ -143,47 +136,47 @@
     />
   </div>
   <div class="form-row channel">
-    <label for="node-input-dacChannel">Channel:</label>
-    <select id="node-input-dacChannel">
-      <option value="AOUT1">A-OUT1</option>
-      <option value="AOUT2">A-OUT2</option>
-      <option value="AOUT3">A-OUT3</option>
-      <option value="AOUT4">A-OUT4</option>
-      <option value="AOUT5">A-OUT5</option>
-      <option value="AOUT6">A-OUT6</option>
-      <option value="AOUT7">A-OUT7</option>
-      <option value="AOUT8">A-OUT8</option>
+    <label for="node-input-channel">Channel:</label>
+    <select id="node-input-channel">
+      <option value="1">A-OUT1</option>
+      <option value="2">A-OUT2</option>
+      <option value="3">A-OUT3</option>
+      <option value="4">A-OUT4</option>
+      <option value="5">A-OUT5</option>
+      <option value="6">A-OUT6</option>
+      <option value="7">A-OUT7</option>
+      <option value="8">A-OUT8</option>
     </select>
   </div>
   <div class="form-row gain">
-    <label for="gainOption">Gain:</label>
+    <label>Gain:</label>
     <input
       type="radio"
-      name="gainOption"
-      id="node-input-gain1"
-      value="gain1"
+      name="gain"
+      id="node-input-gainOff"
+      value="false"
       checked
     />
-    <label for="node-input-gain1">OFF</label>
-    <input type="radio" name="gainOption" id="node-input-gain2" value="gain2" />
-    <label for="node-input-gain2">ON</label>
+    <label for="node-input-gainOff">OFF</label>
+    <input type="radio" name="gain" id="node-input-gainOn" value="true" />
+    <label for="node-input-gainOn">ON</label>
   </div>
-  <div class="form-row voltageGain2">
-    <label for="node-input-voltageGain2">Output voltage (V): </label>
+  <div class="form-row voltageGainOn">
+    <label for="node-input-voltageGainOn">Output voltage (V): </label>
     <input
       type="number"
-      id="node-input-voltageGain2"
+      id="node-input-voltageGainOn"
       placeholder="0-10"
       min="0"
       max="10"
       step="0.1"
     />
   </div>
-  <div class="form-row voltageGain1">
-    <label for="node-input-voltageGain1">Output voltage (V): </label>
+  <div class="form-row voltageGainOff">
+    <label for="node-input-voltageGainOff">Output voltage (V): </label>
     <input
       type="number"
-      id="node-input-voltageGain1"
+      id="node-input-voltageGainOff"
       placeholder="0-5"
       min="0"
       max="5"
@@ -199,7 +192,7 @@
     <dt>RPC Server</dt>
     <dd>The connection to your EdgePi's RPC Server.</dd>
     <dt>Channel</dt>
-    <dd>Select channel for analog output.</dd>
+    <dd>The EdgePi channel to write voltage to.</dd>
     <dt>Output Voltage<span class="property-type">number</span></dt>
     <dd>
       The output voltage for the selected channel. Limit 0-5 for gain OFF
@@ -208,14 +201,14 @@
   </dl>
   <h3>Inputs</h3>
   <dl class="message-properties">
-    Any message can be used to trigger this node.
+    <dt>msg.gain<span class="property-type">string</span></dt>
+    <dt>msg.channel<span class="property-type">number</span></dt>
+    <dt>msg.payload<span class="property-type">number</span></dt>
   </dl>
   <h3>Outputs</h3>
   <dl class="message-properties">
-    <dt>payload <span class="property-type">string</span></dt>
-    <dd>
-      A success message stating the voltage set for the selected channel.
-    </dd>
+    <dt>payload <span class="property-type">number</span></dt>
+    <dd>A success message stating the voltage set for the selected channel.</dd>
   </dl>
   <h3>References</h3>
   <ul>

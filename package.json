@@ -5,7 +5,7 @@
             "edgepi-dac": "edgepi-dac.js"
         }
     },
-    "version": "1.0.6",
+    "version": "1.0.7",
     "description": "node-red node for edgepi dac module utilizing remote procedure calls",
     "main": "index.js",
     "scripts": {
@@ -27,7 +27,7 @@
     },
     "homepage": "https://github.com/EdgePi-Cloud/node-red-edgepi-dac#readme",
     "dependencies": {
-        "@edgepi-cloud/edgepi-rpc": "^1.0.12"
+        "@edgepi-cloud/edgepi-rpc": "^1.1.0"
     },
     "devDependencies": {
         "node-red": "^3.0.2"

@@ -2,61 +2,71 @@ module.exports = function (RED) {
   const rpc = require("@edgepi-cloud/edgepi-rpc");
 
   function DacNode(config) {
-    // Create new node instance with user config
     RED.nodes.createNode(this, config);
     const node = this;
-    const ipc_transport = "ipc:///tmp/edgepi.pipe";
-    const tcp_transport = `tcp://${config.tcpAddress}:${config.tcpPort}`;
-    const transport =
-      config.transport === "Network" ? tcp_transport : ipc_transport;
-    const voltage = parseFloat(config.voltage);
-    const channel = rpc.DACChannel[config.dacChannel];
+    let voltage = config.voltage;
+    let gain = config.gain;
+    let channel = config.channel;
 
-    const dac = new rpc.DacService(transport);
-
-    //  TODO: potentially update if condition based on pos values of dac
-    if (dac) {
-      console.log(config.gainOption);
-      console.log(config.voltage);
-      console.log(config.transport);
-      console.log(config.tcpPort);
-      console.info("DAC node initialized on:", transport);
-      node.status({ fill: "green", shape: "ring", text: "dac initialized" });
-    } else {
-      node.status({
-        fill: "red",
-        shape: "ring",
-        text: "dac failed to initialize.",
+    initializeNode(config).then((dac) => {
+      node.on("input", async function (msg, send, done) {
+        node.status({ fill: "green", shape: "dot", text: "input received" });
+        try {
+          gain = msg.gain || gain;
+          voltage = msg.payload || voltage;
+          channel = msg.channel || channel;
+          if ((gain && voltage > 10) || (!gain && voltage > 5) || voltage < 0) {
+            throw new Error(
+              `Voltage being written is outside the valid range ${
+                gain ? "[0,10]." : "[0,5]."
+              }`
+            );
+          }
+          if (gain) {
+            await dac.setDacGain(true, true);
+          }
+          msg = { payload: await dac.writeVoltage(channel - 1, voltage) };
+        } catch (error) {
+          msg = { payload: error };
+          console.error(error);
+        }
+        send(msg);
+        done?.();
       });
-      throw new Error("Failed to initialize dac.");
-    }
-
-    node.on("input", async function (msg, send, done) {
-      node.status({ fill: "green", shape: "dot", text: "input received" });
-      try {
-        if (config.gain2) {
-          console.log("before set gain");
-          await dac.setDacGain(true, true);
-          console.log("after set gain");
-        }
-        console.log("before response");
-        const response = await dac.writeVoltage(channel, voltage);
-        console.log("after response");
-        msg.payload = response;
-      } catch (error) {
-        msg.payload = error;
-        console.error(error);
-        if (done) {
-          done(error);
-        }
-      }
-      console.log("before send message");
-      send(msg);
-      console.log("after send message");
-      if (done) {
-        done();
-      }
     });
+
+    async function initializeNode(config) {
+      const transport =
+        config.transport === "Network"
+          ? `tcp://${config.tcpAddress}:${config.tcpPort}`
+          : "ipc:///tmp/edgepi.pipe";
+
+      try {
+        const dac = new rpc.DacService(transport);
+        console.info("DAC node initialized on:", transport);
+        node.status({ fill: "green", shape: "ring", text: "dac initialized" });
+
+        if ((gain && voltage > 10) || (!gain && voltage > 5) || voltage < 0) {
+          throw new Error(
+            `Voltage being written is outside the valid range ${
+              gain ? "[0,10]" : "[0,5]"
+            }`
+          );
+        }
+        if (gain) {
+          await dac.setDacGain(true, true);
+        }
+        console.info(await dac.writeVoltage(channel - 1, voltage));
+        return dac;
+      } catch (error) {
+        console.error(error);
+        node.status({
+          fill: "red",
+          shape: "ring",
+          text: "dac failed to initialize.",
+        });
+      }
+    }
   }
   RED.nodes.registerType("dac", DacNode);
 };
