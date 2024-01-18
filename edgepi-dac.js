@@ -13,10 +13,7 @@ module.exports = function (RED) {
         node.status({ fill: "green", shape: "dot", text: "input received" });
         try {
           gain = msg.gain || gain;
-          voltage =
-            msg.payload && typeof msg.payload == "number"
-              ? msg.payload
-              : voltage;
+          voltage = msg.payload || voltage;
           channel = msg.channel || channel;
           if ((gain && voltage > 10) || (!gain && voltage > 5) || voltage < 0) {
             throw new Error(
