@@ -18,12 +18,10 @@
       return this.name || "dac";
     },
     oneditprepare: function () {
-      const configTransportSelect = document.getElementById(
-        "node-input-transport"
-      );
+      const transportType = document.getElementById("node-input-transport");
       const gainOff = document.getElementById("node-input-gainOff");
       const gainOn = document.getElementById("node-input-gainOn");
-      const tcpField = document.querySelector(".form-row.tcp");
+      const tcpTransportInputs = document.querySelector(".form-row.tcp");
       const voltageGainOff = document.querySelector(".form-row.voltageGainOff");
       const voltageGainOn = document.querySelector(".form-row.voltageGainOn");
 
@@ -34,8 +32,8 @@
       }
 
       function updateEditor() {
-        tcpField.style.display =
-          configTransportSelect.value === "Network" ? "flex" : "none";
+        tcpTransportInputs.style.display =
+          transportType.value === "Network" ? "flex" : "none";
         const selectedGain = !gainOff.checked;
         voltageGainOff.style.display = !selectedGain ? "flex" : "none";
         voltageGainOn.style.display = selectedGain ? "flex" : "none";
@@ -46,7 +44,7 @@
         this.gain ? "node-input-voltageGainOn" : "node-input-voltageGainOff"
       ).value = this.voltage;
 
-      configTransportSelect.addEventListener("change", updateEditor);
+      transportType.addEventListener("change", updateEditor);
       gainOff.addEventListener("change", updateEditor);
       gainOn.addEventListener("change", updateEditor);
     },
