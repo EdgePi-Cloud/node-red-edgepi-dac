@@ -20,7 +20,6 @@ module.exports = function (RED) {
             channel = msg.channel;
           }
 
-          console.log(voltage, gain, channel);
           if ((gain && voltage > 10) || (!gain && voltage > 5) || voltage < 0) {
             throw new Error(
               `Voltage being written is outside the valid range ${
