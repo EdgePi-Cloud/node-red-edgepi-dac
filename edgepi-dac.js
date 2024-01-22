@@ -4,17 +4,22 @@ module.exports = function (RED) {
   function DacNode(config) {
     RED.nodes.createNode(this, config);
     const node = this;
-    let voltage = config.voltage;
-    let gain = config.gain;
-    let channel = config.channel;
+    let { voltage, gain, channel } = config;
 
     initializeNode(config).then((dac) => {
       node.on("input", async function (msg, send, done) {
         node.status({ fill: "green", shape: "dot", text: "input received" });
         try {
-          gain = msg.gain || gain;
-          voltage = msg.payload || voltage;
-          channel = msg.channel || channel;
+          if (msg.payload) {
+            voltage = msg.payload;
+          }
+          if (typeof msg.gain === "boolean") {
+            gain = msg.gain;
+          }
+          if (msg.channel) {
+            channel = msg.channel;
+          }
+
           if ((gain && voltage > 10) || (!gain && voltage > 5) || voltage < 0) {
             throw new Error(
               `Voltage being written is outside the valid range ${
