@@ -7,7 +7,7 @@
       transport: { value: "Local" },
       tcpAddress: { value: "" },
       tcpPort: { value: "" },
-      voltage: {},
+      voltage: { value: 0 },
       channel: { value: 1 },
       gain: { value: false },
     },
@@ -18,12 +18,10 @@
       return this.name || "dac";
     },
     oneditprepare: function () {
-      const configTransportSelect = document.getElementById(
-        "node-input-transport"
-      );
+      const transportType = document.getElementById("node-input-transport");
       const gainOff = document.getElementById("node-input-gainOff");
       const gainOn = document.getElementById("node-input-gainOn");
-      const tcpField = document.querySelector(".form-row.tcp");
+      const tcpTransportInputs = document.querySelector(".form-row.tcp");
       const voltageGainOff = document.querySelector(".form-row.voltageGainOff");
       const voltageGainOn = document.querySelector(".form-row.voltageGainOn");
 
@@ -34,8 +32,8 @@
       }
 
       function updateEditor() {
-        tcpField.style.display =
-          configTransportSelect.value === "Network" ? "flex" : "none";
+        tcpTransportInputs.style.display =
+          transportType.value === "Network" ? "flex" : "none";
         const selectedGain = !gainOff.checked;
         voltageGainOff.style.display = !selectedGain ? "flex" : "none";
         voltageGainOn.style.display = selectedGain ? "flex" : "none";
@@ -46,7 +44,7 @@
         this.gain ? "node-input-voltageGainOn" : "node-input-voltageGainOff"
       ).value = this.voltage;
 
-      configTransportSelect.addEventListener("change", updateEditor);
+      transportType.addEventListener("change", updateEditor);
       gainOff.addEventListener("change", updateEditor);
       gainOn.addEventListener("change", updateEditor);
     },
@@ -190,7 +188,11 @@
   <h3>Properties</h3>
   <dl class="message-properties">
     <dt>RPC Server</dt>
-    <dd>The connection to your EdgePi's RPC Server.</dd>
+    <dd>
+      The connection to your EdgePi's RPC Server. Use <strong>Local</strong> if
+      node-red is running on EdgePi. Otherwise use the
+      <strong>Network</strong> option and enter EdgePi's IP address / Hostname.
+    </dd>
     <dt>Channel</dt>
     <dd>The EdgePi channel to write voltage to.</dd>
     <dt>Output Voltage<span class="property-type">number</span></dt>
