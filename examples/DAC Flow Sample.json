@@ -5,7 +5,7 @@
         "z": "aa7eb918109cfafe",
         "name": "",
         "transport": "Local",
-        "tcpAddress": "192.168.1.35",
+        "tcpAddress": "",
         "tcpPort": "5555",
         "voltage": "1",
         "channel": "1",
